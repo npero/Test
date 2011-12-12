@@ -90,6 +90,9 @@ if($roll_release) {
 	$new_version = interpolate $VERSION;
 	$bugfix_branchname = "bugfix-$new_version";
 
+
+	`git checkout master`; die "Cannot checkout master, stopped" if $?;
+	`git cherry-pick -e $new_tag staging`; restore_and_die "Cannot merge bugfix into $branch_name, stopped" if $?;
 	#`git merge --ff-only $bugfix_branchname`; restore_and_die "Cannot merge bugfix into $branch_name, stopped" if $?;
    	#say "Merge $bugfix_branchname into $branch_name, done.";
 
@@ -133,6 +136,11 @@ say "Publish_$branch_name into Github";
 say "Deployment successful.";
 
 `git checkout master`; die "Cannot checkout master, stopped" if $?;
+if($fix_release){
+	`git cherry-pick -e $new_tag $new_tag`; restore_and_die "Cannot cherry-pick $new_tag, stopped" if $?;
+}
+
+`git push origin master`; restore_and_die "Cannot push master to origin, stopped" if $?;
 
 # say "Start code analysing with sonar";
 # `mvn sonar:sonar  -DartifactVersion=$new_version -Dsonar.dynamicAnalysis=reuseReports -Dsonar.skipDesign=true`;
