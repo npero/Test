@@ -76,7 +76,7 @@ if (/$release_tag_regex/) {
 $current_version = interpolate $VERSION;
 
 if($roll_release) {
-	if($major_tag){
+	if($major_flag){
 		$release ++;
 	}
 	else{
