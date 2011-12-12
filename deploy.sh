@@ -198,9 +198,9 @@ if ($branch_name eq "staging") {
 # }
 
 say "Publish_$branch_name into Github";
-push "master";
-push $branch_name;
-push $new_tag;
+push("master");
+push($branch_name);
+push($new_tag);
 
 #if($fix_release) {
 
