@@ -90,10 +90,10 @@ if($roll_release) {
 	$new_version = interpolate $VERSION;
 	$bugfix_branchname = "bugfix-$new_version";
 
-	`git merge --ff-only $bugfix_branchname`; restore_and_die "Cannot merge bugfix into $branch_name, stopped" if $?;
-   	say "Merge $bugfix_branchname into $branch_name, done.";
+	#`git merge --ff-only $bugfix_branchname`; restore_and_die "Cannot merge bugfix into $branch_name, stopped" if $?;
+   	#say "Merge $bugfix_branchname into $branch_name, done.";
 
-	say "The bug count has been incremented.";
+	#say "The bug count has been incremented.";
    	say qq/Start deployment of the fixing release "$new_tag"/;
 }
 
