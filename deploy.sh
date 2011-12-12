@@ -60,10 +60,10 @@ chdir($working_dir);
 
 if ($ARGV[0] eq "staging") {
    $branch_name = "staging";
-   $uri="http://192.168.13.78:8080";
+   # $uri="http://192.168.13.78:8080";
 } elsif ($ARGV[0] eq "prod") {
    $branch_name = "prod";
-   $uri="http://192.168.15.173:8080";
+   # $uri="http://192.168.15.173:8080";
 } else {
    die "Do you deploy in staging or prod ?";
 }
@@ -202,20 +202,20 @@ push "master";
 push $branch_name;
 push $new_tag;
 
-if($fix_release) {
+#if($fix_release) {
 
-    if($branch_name eq "staging"){
-         checkout "master";
-         `git cherry-pick $new_tag`;
-         tag $copy_new_tag;
+#    if($branch_name eq "staging"){
+#         checkout "master";
+#         `git cherry-pick $new_tag`;
+#         tag $copy_new_tag;
 
-    }
-    elsif($branch_name eq "prod"){
-         checkout "staging";
-         `git cherry-pick $new_tag`;
-         tag $copy_new_tag;
-    }
-}
+#    }
+#    elsif($branch_name eq "prod"){
+#         checkout "staging";
+#         `git cherry-pick $new_tag`;
+#         tag $copy_new_tag;
+#    }
+#}
 
 say "Deployment successful.";
 
