@@ -138,7 +138,7 @@ if ($branch_name eq "staging") {
    }
 
 
-} elseif ($branch_name eq "prod") {
+} elsif ($branch_name eq "prod") {
     if($roll_release) {
         checkout $branch_name;
         if($major_flag){
@@ -210,7 +210,7 @@ if($fix_release) {
          tag $copy_new_tag;
 
     }
-    elseif($branch_name eq "prod"){
+    elsif($branch_name eq "prod"){
          checkout "staging";
          `git cherry-pick $new_tag`;
          tag $copy_new_tag;
