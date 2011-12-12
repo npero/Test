@@ -21,7 +21,7 @@ sub restore_and_die {
 }
 
 $working_dir = "$FindBin::RealBin/../../";
-chdir($working_dir);
+# chdir($working_dir);
 
 if ($ARGV[0] eq "staging") {
    $branch_name = "staging";
