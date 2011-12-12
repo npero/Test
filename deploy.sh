@@ -3,7 +3,10 @@
 use feature qw(say);
 use Term::ReadKey;
 use FindBin;
+use Getopt::Long;
 
+$major_flag='';
+GetOptions ("major"  => \$major_flag);
 ;
 
 $release_tag_regex=qr/(\w+)-(\d)\.(\d+)\.(\d+)\.?(\d*)/;
@@ -73,7 +76,13 @@ if (/$release_tag_regex/) {
 $current_version = interpolate $VERSION;
 
 if($roll_release) {
-	$release ++;
+	if($major_tag){
+		$release ++;
+	}
+	else{
+		$bugfix ++;
+		say "Option --major not tagged";
+	}
 	$new_tag = interpolate $TAG;
 	$new_version= interpolate $VERSION;
 	# We would like a linear staging/prod branch without the feature commits
