@@ -157,10 +157,10 @@ if ($branch_name eq "staging") {
 
     } elsif ($fix_release) {
         $hotfix ++;
-        $new_tag = interpolate $PROD_TAG";
+        $new_tag = interpolate $PROD_TAG;
         $new_version = interpolate $PROD_VERSION;
 
-        $copy_new_tag = "$new_tag" + "(p)";
+        $copy_new_tag = $new_tag + "(p)";
 
         say qq/Start deployment of the fixing release "$new_tag";
 
