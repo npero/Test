@@ -186,7 +186,7 @@ if ($branch_name eq "staging") {
 
 # Let's not create bug fix branch automatically for now.
 # Whenever there is a bug in staging/prod let's do it manually
-
+#
 # if ($roll_release) { # create a new bug fix branch
 #     my $new_bugfix_branchname = "bugfix-$new_version";
 #     `git branch $new_bugfix_branchname`;
@@ -203,7 +203,7 @@ push($branch_name);
 push($new_tag);
 
 #if($fix_release) {
-
+#
 #    if($branch_name eq "staging"){
 #         checkout "master";
 #         `git cherry-pick $new_tag`;
