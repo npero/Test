@@ -7,7 +7,7 @@ use FindBin;
 ;
 
 $release_tag_regex=qr/(\w+)-(\d)\.(\d+)\.(\d+)\.?(\d*)/;
-$VERSION = '$release_number.$version_number.$sub_version_number';
+$VERSION = '$major.$minor.$release.$bugfix';
 $TAG = '$env_name' . '-' . $VERSION;
 
 # Pass a CONSTANT string containing $variable to interpolate dynamically.
@@ -32,7 +32,6 @@ if ($ARGV[0] eq "staging") {
 } else {
    die "Do you deploy in staging or prod ?";
 }
-
 
 $uri="http://192.168.64.128:8080";
 
@@ -63,10 +62,10 @@ $_ = `git describe --tags --abbrev=0 --match=staging-*`;
 print "Current tag is $_";
 if (/$release_tag_regex/) {
 	$env_name = $1;
-	$release_number = $2;
-	$version_number = $3;
-   	$sub_version_number = $4;
-	$bug_count = $5;
+	$major = $2;
+	$minor = $3;
+   	$release = $4;
+	$bugfix = $5;
 } else {
 	restore_and_die "Wrong tag description, stopped";
 }
@@ -74,7 +73,7 @@ if (/$release_tag_regex/) {
 $current_version = interpolate $VERSION;
 
 if($roll_release) {
-	$sub_version_number ++;
+	$release ++;
 	$new_tag = interpolate $TAG;
 	$new_version= interpolate $VERSION;
 	# We would like a linear staging/prod branch without the feature commits
@@ -83,14 +82,10 @@ if($roll_release) {
 	say "Sub-version tag has been incremented and the bug count reset.";
    	say qq/Start deployment of the rolling release "$new_tag"./;
 } elsif ($fix_release) {
-	if ($bug_count) {
-		$bug_count ++;
-	} else {
-	    $bug_count = '1';
-	}
-	$new_tag = interpolate $TAG . ".$bug_count";
-	$new_version = "$current_version.$bug_count";
-	$bugfix_branchname = "bugfix-$current_version";
+	$bugfix ++;
+	$new_tag = interpolate $TAG;
+	$new_version = interpolate $VERSION;
+	$bugfix_branchname = "bugfix-$new_version";
 
 	`git merge --ff-only $bugfix_branchname`; restore_and_die "Cannot merge bugfix into $branch_name, stopped" if $?;
    	say "Merge $bugfix_branchname into $branch_name, done.";
