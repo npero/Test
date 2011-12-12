@@ -102,7 +102,7 @@ if($roll_release) {
 # Build the artifact (will be install whenever sonar is accessible remotely
 print
 "\t - run all tests,\n\t - build the artifact,\n\t - send it to the remote server to be deployed.\n This takes a while ...\n";
-`mvn clean tomcat:redeploy -DfailIfNoTests=false -DbaseUri=$uri -DartifactVersion=$new_version -Dtomcat.password=$password`;
+# `mvn clean tomcat:redeploy -DfailIfNoTests=false -DbaseUri=$uri -DartifactVersion=$new_version -Dtomcat.password=$password`;
 if ($?) {
 	say "Redeploy FAILED!";
 	`git reset --hard HEAD^`;
