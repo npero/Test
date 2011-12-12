@@ -76,13 +76,7 @@ if (/$release_tag_regex/) {
 $current_version = interpolate $VERSION;
 
 if($roll_release) {
-	if($major_flag){
-		$release ++;
-	}
-	else{
-		$bugfix ++;
-		say "Option --major not tagged";
-	}
+	$release ++;
 	$new_tag = interpolate $TAG;
 	$new_version= interpolate $VERSION;
 	# We would like a linear staging/prod branch without the feature commits
