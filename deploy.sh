@@ -160,9 +160,9 @@ if ($branch_name eq "staging") {
         $new_tag = interpolate $PROD_TAG";
         $new_version = interpolate $PROD_VERSION;
 
-        $copy_new_tag = $new_tag + '(p)';
+        $copy_new_tag = "$new_tag + (p)";
 
-        say qq/Start deployment of the fixing release "$new_tag"/;
+        say qq/Start deployment of the fixing release "$new_tag";
 
     }
 
