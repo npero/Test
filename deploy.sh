@@ -36,8 +36,6 @@ if ($ARGV[0] eq "staging") {
    die "Do you deploy in staging or prod ?";
 }
 
-$uri="http://192.168.64.128:8080";
-
 $fix_release = 1 if $ARGV[1] eq "FIX";
 $roll_release = 1 if $ARGV[1] eq "ROLL";
 die "Is this a FIX or ROLL release, Please tell me!" unless ($fix_release || $roll_release);
@@ -74,6 +72,7 @@ if (/$release_tag_regex/) {
 }
 
 $current_version = interpolate $VERSION;
+$bugfix_branchname = "bugfix-$current_version";
 
 if($roll_release) {
 	$release ++;
@@ -88,17 +87,15 @@ if($roll_release) {
 	$bugfix ++;
 	$new_tag = interpolate $TAG;
 	$new_version = interpolate $VERSION;
-	$bugfix_branchname = "bugfix-$new_version";
+	#$bugfix_branchname = "bugfix-$current_version";
 
-
-	`git checkout master`; die "Cannot checkout master, stopped" if $?;
-	`git cherry-pick -e $new_tag staging`; restore_and_die "Cannot merge bugfix into $branch_name, stopped" if $?;
-	#`git merge --ff-only $bugfix_branchname`; restore_and_die "Cannot merge bugfix into $branch_name, stopped" if $?;
+	`git merge --ff-only $bugfix_branchname`; restore_and_die "Cannot merge bugfix into $branch_name, stopped" if $?;
    	#say "Merge $bugfix_branchname into $branch_name, done.";
 
 	#say "The bug count has been incremented.";
    	say qq/Start deployment of the fixing release "$new_tag"/;
 }
+
 
 # Build the artifact (will be install whenever sonar is accessible remotely
 print
@@ -135,12 +132,19 @@ say "Publish_$branch_name into Github";
 
 say "Deployment successful.";
 
+
+`git branch -D $bugfix_branchname`; restore_and_die "Cannot delete previous bugfix-branch : $bugfix_branchname" if $?
+
+$new_bugfix_branchname = "bugfix-$new_version";
+`git branch $new_bugfix_branchname`;
+`git push origin $new_bugfix_branchname`;
+
 `git checkout master`; die "Cannot checkout master, stopped" if $?;
 if($fix_release){
-	`git cherry-pick -e "$new_tag" $new_tag`; restore_and_die "Cannot cherry-pick $new_tag, stopped" if $?;
+	`git cherry-pick $new_tag`; restore_and_die "Cannot cherry-pick $new_tag, stopped" if $?;
+	`git commit --amend -m "$new_tag"`; restore_and_die "Cannot amend the last commit after cherry-picking" if $?;
+	`git push origin master`; restore_and_die "Cannot push master to origin, stopped" if $?;
 }
-
-`git push origin master`; restore_and_die "Cannot push master to origin, stopped" if $?;
 
 # say "Start code analysing with sonar";
 # `mvn sonar:sonar  -DartifactVersion=$new_version -Dsonar.dynamicAnalysis=reuseReports -Dsonar.skipDesign=true`;
