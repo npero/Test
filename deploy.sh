@@ -76,6 +76,7 @@ $bugfix_branchname = "bugfix-$current_version";
 
 if($roll_release) {
 	$release ++;
+	$bugfix = '0';
 	$new_tag = interpolate $TAG;
 	$new_version= interpolate $VERSION;
 	# We would like a linear staging/prod branch without the feature commits
@@ -87,12 +88,10 @@ if($roll_release) {
 	$bugfix ++;
 	$new_tag = interpolate $TAG;
 	$new_version = interpolate $VERSION;
-	#$bugfix_branchname = "bugfix-$current_version";
 
 	`git merge --ff-only $bugfix_branchname`; restore_and_die "Cannot merge bugfix into $branch_name, stopped" if $?;
-   	#say "Merge $bugfix_branchname into $branch_name, done.";
+   	say "Merge $bugfix_branchname into $branch_name, done.";
 
-	#say "The bug count has been incremented.";
    	say qq/Start deployment of the fixing release "$new_tag"/;
 }
 
@@ -112,19 +111,6 @@ say "Deploy of $new_version into $branch_name succeeds.";
 
 say "About to tag the source with $new_tag";
 `git tag $new_tag`; restore_and_die "Cannot tag source, stopped" if $?;
-
-# Let's not create bug fix branch automatically for now.
-# Whenever there is a bug in staging/prod let's do it manually
-
-# if ($roll_release) { # create a new bug fix branch
-#     my $new_bugfix_branchname = "bugfix-$new_version";
-#     `git branch $new_bugfix_branchname`;
-#     `git push origin $new_bugfix_branchname`;
-#     say qq/
-#     A new "$new_bugfix_branchname" branch has been created and published.
-#     If $branch_name "$new_version" has not been released into production,
-#     you can now manually remove the "bugfix-$current_version" branch locally and remotely./;
-# }
 
 say "Publish_$branch_name into Github";
 `git push origin $branch_name`; restore_and_die "Cannot push $branch_name to origin, stopped" if $?;
