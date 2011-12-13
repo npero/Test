@@ -11,7 +11,9 @@ GetOptions ("major"  => \$major_flag);
 
 $release_tag_regex=qr/(\w+)-(\d)\.(\d+)\.(\d+)\.?(\d*)/;
 $VERSION = '$major.$minor.$release.$bugfix';
+$NEW_VERSION = '$new_major.$new_minor.$release.$bugfix';
 $TAG = '$env_name' . '-' . $VERSION;
+$NEW_TAG = '$env_name' . '-' . $NEW_VERSION;
 
 # Pass a CONSTANT string containing $variable to interpolate dynamically.
 sub interpolate {
@@ -64,11 +66,13 @@ print "Current prod tag is $_";
 if (/$release_tag_regex/) {
 	$major = $2;
 	$minor = $3;
+	$new_minor = $minor;
+	$new_major = $major;
 	if($major_flag){
-		$major ++;
-		$minor = '0';
+		$new_major ++;
+		$new_minor = '0';
 	}else{
-		$minor ++;
+		$new_minor ++;
 	}
 } else {
 	restore_and_die "Wrong prod tag description, stopped";
@@ -90,8 +94,8 @@ $bugfix_branchname = "bugfix-$current_version";
 if($roll_release) {
 	$release ++;
 	$bugfix = '0';
-	$new_tag = interpolate $TAG;
-	$new_version= interpolate $VERSION;
+	$new_tag = interpolate $NEW_TAG;
+	$new_version= interpolate $NEW_VERSION;
 	# We would like a linear staging/prod branch without the feature commits
 	`git merge --no-ff master -m "$new_tag"`; restore_and_die "Cannot merge master into $branch_name, stopped" if $?;
 	say "Merge master into $branch_name, done.";
@@ -99,8 +103,8 @@ if($roll_release) {
    	say qq/Start deployment of the rolling release "$new_tag"./;
 } elsif ($fix_release) {
 	$bugfix ++;
-	$new_tag = interpolate $TAG;
-	$new_version = interpolate $VERSION;
+	$new_tag = interpolate $NEW_TAG;
+	$new_version = interpolate $NEW_VERSION;
 
 	`git merge --ff-only $bugfix_branchname`; restore_and_die "Cannot merge bugfix into $branch_name, stopped" if $?;
    	say "Merge $bugfix_branchname into $branch_name, done.";
