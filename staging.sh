@@ -59,12 +59,25 @@ if ($roll_release) {
 	$diff=`git diff --stat origin/master master`; restore_and_die "Please synchronize your master before any deployment, stopped" if $diff;
 }
 
-$_ = `git describe --tags --abbrev=0 --match=staging-*`; 
-print "Current tag is $_";
+$_ = `git describe --tags --abbrev=0 --match=prod-*`;
+print "Current prod tag is $_";
 if (/$release_tag_regex/) {
-	$env_name = $1;
 	$major = $2;
 	$minor = $3;
+	if($major_flag){
+		$major ++;
+		$minor = '0';
+	}else{
+		$minor ++;
+	}
+} else {
+	restore_and_die "Wrong prod tag description, stopped";
+}
+
+$_ = `git describe --tags --abbrev=0 --match=staging-*`; 
+print "Current staging tag is $_";
+if (/$release_tag_regex/) {
+	$env_name = $1;
    	$release = $4;
 	$bugfix = $5;
 } else {
