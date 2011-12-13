@@ -145,7 +145,7 @@ if($fix_release){
 	`git commit --amend -m "$new_tag"`; restore_and_die "Cannot amend the last commit after cherry-picking" if $?;
 	`git push origin master`; restore_and_die "Cannot push master to origin, stopped" if $?;
 }
-
+;
 # say "Start code analysing with sonar";
 # `mvn sonar:sonar  -DartifactVersion=$new_version -Dsonar.dynamicAnalysis=reuseReports -Dsonar.skipDesign=true`;
 
