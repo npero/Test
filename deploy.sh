@@ -133,7 +133,7 @@ say "Publish_$branch_name into Github";
 say "Deployment successful.";
 
 
-`git branch -D $bugfix_branchname`; restore_and_die "Cannot delete previous bugfix-branch : $bugfix_branchname" if $?
+`git branch -D $bugfix_branchname`; restore_and_die "Cannot delete previous bugfix-branch : $bugfix_branchname" if $?;
 
 $new_bugfix_branchname = "bugfix-$new_version";
 `git branch $new_bugfix_branchname`;
