@@ -31,8 +31,8 @@ $working_dir = "$FindBin::RealBin/../../";
 $branch_name = "staging";
 $uri="http://192.168.13.78:8080";
 
-$fix_release = 1 if $ARGV[1] eq "FIX";
-$roll_release = 1 if $ARGV[1] eq "ROLL";
+$fix_release = 1 if $ARGV[0] eq "FIX";
+$roll_release = 1 if $ARGV[0] eq "ROLL";
 die "Is this a FIX or ROLL release, Please tell me!" unless ($fix_release || $roll_release);
 
 ReadMode('noecho');
