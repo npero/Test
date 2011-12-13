@@ -137,7 +137,7 @@ say "Deployment successful.";
 
 `git checkout master`; die "Cannot checkout master, stopped" if $?;
 if($fix_release){
-	`git cherry-pick -e $new_tag $new_tag`; restore_and_die "Cannot cherry-pick $new_tag, stopped" if $?;
+	`git cherry-pick -e "$new_tag" $new_tag`; restore_and_die "Cannot cherry-pick $new_tag, stopped" if $?;
 }
 
 `git push origin master`; restore_and_die "Cannot push master to origin, stopped" if $?;
