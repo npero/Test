@@ -64,10 +64,8 @@ if ($roll_release) {
 $_ = `git describe --tags --abbrev=0 --match=prod-*`;
 print "Current prod tag is $_";
 if (/$release_tag_regex/) {
-	$major = $2;
-	$minor = $3;
-	$new_minor = $minor;
-	$new_major = $major;
+	$new_major = $2;
+	$new_minor = $3;
 	if($major_flag){
 		$new_major ++;
 		$new_minor = '0';
@@ -81,6 +79,8 @@ if (/$release_tag_regex/) {
 $_ = `git describe --tags --abbrev=0 --match=staging-*`; 
 print "Current staging tag is $_";
 if (/$release_tag_regex/) {
+	$major = $2;
+	$minor = $3;
 	$env_name = $1;
    	$release = $4;
 	$bugfix = $5;
