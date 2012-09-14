@@ -33,18 +33,15 @@ $fix_release = 1 if $ARGV[0] eq "FIX";
 $roll_release = 1 if $ARGV[0] eq "ROLL";
 die "Is this a FIX or ROLL release, Please tell me!" unless ($fix_release || $roll_release);
 
-ReadMode('noecho');
-say "Deploy to $branch_name@$uri. Please enter the server password:";
-$password = ReadLine(0);
-unless (length $password) {
-	die "Missing password, stopped";
-}
 
 `git checkout $branch_name`; die "Cannot checkout into $branch_name, stopped" if $?;
 
 say "Check if $branch_name is in sync with Github.";
-`git fetch origin`; restore_and_die "Cannot fetch origin/$branch_name, stopped" if $?;
-$diff=`git diff --stat origin/$branch_name $branch_name`; restore_and_die "Please synchronize your $branch_name before any deployment, stopped" if $diff;
+#`git fetch origin`; restore_and_die "Cannot fetch origin/$branch_name, stopped" if $?;
+#$diff=`git diff --stat origin/$branch_name $branch_name`; restore_and_die "Please synchronize your $branch_name before any deployment, stopped" if $diff;
+
+$diff=`git push origin $branch_name`; restore_and_die "Automatic sync failed. Please sync branch $branch_name before any deployment, stopped" if $diff;
+
 
 if ($roll_release) {
     say "Roll release: check if master is in sync with Github.";
@@ -101,28 +98,20 @@ if($roll_release) {
 
 # Build the artifact (will be install whenever sonar is accessible remotely
 print
-"\t - run all tests,\n\t - build the artifact,\n\t - send it to the remote server to be deployed.\n This takes a while ...\n";
-# `mvn clean tomcat:redeploy -DfailIfNoTests=false -DbaseUri=$uri -DartifactVersion=$new_version -Dtomcat.password=$password`;
-if ($?) {
-	say "Redeploy FAILED!";
-	`git reset --hard HEAD^`;
-	print "\t$branch_name has been reset to previous state. " unless $?;
-	restore_and_die "\tSource won't be tagged, stopped";
-}
+"\tSkip test, build artifact and tomcat deploy steps...\n";
 
-say "Deploy of $new_version into $branch_name succeeds."; 
 
 say "About to tag the source with $new_tag";
 `git tag $new_tag`; restore_and_die "Cannot tag source, stopped" if $?;
 
 say "Publish_$branch_name into Github";
-`git push origin $branch_name`; restore_and_die "Cannot push $branch_name to origin, stopped" if $?;
+`git push origin $branch_name`; say "Cannot push $branch_name to origin, stopped" if $?;
 `git push origin $new_tag`; restore_and_die "Cannot push new tag to origin, stopped" if $?;
 
 say "Deployment successful.";
 
 
-`git branch -D $bugfix_branchname`; restore_and_die "Cannot delete previous bugfix-branch : $bugfix_branchname" if $?;
+`git branch -D $bugfix_branchname`; say "Cannot delete previous local bugfix-branch : $bugfix_branchname" if $?;
 `git push origin :$bugfix_branchname`; restore_and_die "Cannot delete previous remote bugfix-branch : origin/$bugfix_branchname" if $?;
 
 $new_bugfix_branchname = "bugfix-$new_version";
