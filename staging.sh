@@ -45,8 +45,9 @@ $diff=`git push origin $branch_name`; restore_and_die "Automatic sync failed. Pl
 
 if ($roll_release) {
     say "Roll release: check if master is in sync with Github.";
-	`git fetch origin master`;  restore_and_die "Cannot fetch origin/master, stopped" if $?;
-	$diff=`git diff --stat origin/master master`; restore_and_die "Please synchronize your master before any deployment, stopped" if $diff;
+	#`git fetch origin master`;  restore_and_die "Cannot fetch origin/master, stopped" if $?;
+	#$diff=`git diff --stat origin/master master`; restore_and_die "Please synchronize your master before any deployment, stopped" if $diff;
+	$diff=`git push origin master`; restore_and_die "Automatic sync failed. Please sync branch master before any deployment, stopped" if $diff;
 }
 
 $_ = `git describe --tags --abbrev=0 --match=prod-*`;
