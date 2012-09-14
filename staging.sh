@@ -37,6 +37,7 @@ die "Is this a FIX or ROLL release, Please tell me!" unless ($fix_release || $ro
 `git checkout $branch_name`; die "Cannot checkout into $branch_name, stopped" if $?;
 
 say "Check if $branch_name is in sync with Github.";
+
 #`git fetch origin`; restore_and_die "Cannot fetch origin/$branch_name, stopped" if $?;
 #$diff=`git diff --stat origin/$branch_name $branch_name`; restore_and_die "Please synchronize your $branch_name before any deployment, stopped" if $diff;
 
