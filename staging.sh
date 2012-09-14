@@ -34,23 +34,25 @@ $roll_release = 1 if $ARGV[0] eq "ROLL";
 die "Is this a FIX or ROLL release, Please tell me!" unless ($fix_release || $roll_release);
 
 
+
+`git pull origin master`;
+`git push origin master`;
+
+`git pull origin $branch_name`;
+
 `git checkout $branch_name`; die "Cannot checkout into $branch_name, stopped" if $?;
 
-say "Check if $branch_name is in sync with Github.";
+#say "Check if $branch_name is in sync with Github.";
 
 #`git fetch origin`; restore_and_die "Cannot fetch origin/$branch_name, stopped" if $?;
 #$diff=`git diff --stat origin/$branch_name $branch_name`; restore_and_die "Please synchronize your $branch_name before any deployment, stopped" if $diff;
 
-$diff=`git pull origin $branch_name`; restore_and_die "Automatic sync failed. Please sync branch $branch_name before any deployment, stopped" if $diff;
-
 
 if ($roll_release) {
-    say "Roll release: check if master is in sync with Github.";
+    #say "Roll release: check if master is in sync with Github.";
 	#`git fetch origin master`;  restore_and_die "Cannot fetch origin/master, stopped" if $?;
 	#$diff=`git diff --stat origin/master master`; restore_and_die "Please synchronize your master before any deployment, stopped" if $diff;
 	
-	$diff=`git pull origin master`; restore_and_die "Automatic sync failed. Please sync branch master before any deployment, stopped" if $diff;
-	$diff=`git push origin master`; restore_and_die "Automatic sync failed. Please sync branch master before any deployment, stopped" if $diff;
 }
 
 $_ = `git describe --tags --abbrev=0 --match=prod-*`;
