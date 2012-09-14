@@ -108,6 +108,7 @@ print
 
 
 say "About to tag the source with $new_tag";
+`git tag -d $new_tag`; restore_and_die "Cannot delete tag source, stopped" if $?;
 `git tag $new_tag`; restore_and_die "Cannot tag source, stopped" if $?;
 
 say "Publish_$branch_name into Github";
