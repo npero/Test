@@ -5,8 +5,6 @@ use Term::ReadKey;
 use FindBin;
 use Getopt::Long;
 
-$major_flag='';
-GetOptions ("major"  => \$major_flag);
 ;
 
 $release_tag_regex=qr/(\w+)-(\d)\.(\d+)\.(\d+)\.?(\d*)/;
@@ -59,12 +57,7 @@ print "Current prod tag is $_";
 if (/$release_tag_regex/) {
 	$new_major = $2;
 	$new_minor = $3;
-	if($major_flag){
-		$new_major ++;
-		$new_minor = '0';
-	}else{
-		$new_minor ++;
-	}
+	$new_minor ++;
 } else {
 	restore_and_die "Wrong prod tag description, stopped";
 }
